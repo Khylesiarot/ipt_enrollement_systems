@@ -52,7 +52,7 @@ class College {
 }
 
 
-Future<College?> createCollege(College college, BuildContext context) async {
+Future<bool> createCollege(College college, BuildContext context) async {
   try {
     final response = await http.post(
       Uri.parse('http://localhost:8000/colleges/'),
@@ -64,15 +64,37 @@ Future<College?> createCollege(College college, BuildContext context) async {
     if (response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('College created successfully')));
-      return College.fromJson(jsonDecode(response.body));
+      return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error creating college: ${response.body}')));
-      return null;
+          content: Text('Error creating college')));
+      return false;
     }
   } catch (error) {
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error creating student: $error')));
-    return null;
+        SnackBar(content: Text('Error creating college')));
+    return false;
+  }
+}
+
+Future<void> deleteCollege( context, String collegeId) async {
+  final url = Uri.parse('http://localhost:8000/colleges/$collegeId');
+
+  final response = await http.delete(url);
+
+  if (response.statusCode == 204) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('College deleted successfully'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Failed to delete college'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

@@ -69,3 +69,13 @@ Future<Student?> createStudent(Student student, BuildContext context) async {
   }
 }
 
+Future<Student> getStudent(String studentId) async {
+  final response = await http.get(Uri.parse('http://localhost:8000/students/$studentId'));
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final student = Student.fromJson(data);
+    return student;
+  } else {
+    throw Exception('Failed to load student');
+  }
+}

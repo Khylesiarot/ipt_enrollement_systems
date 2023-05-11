@@ -1,16 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:ipt_enrollement_systems/Screens/homepage.dart';
 import 'package:ipt_enrollement_systems/Screens/register.dart';
 
 
 import 'package:http/http.dart' as http;
 import 'package:ipt_enrollement_systems/models/admin.dart';
 import 'package:ipt_enrollement_systems/models/colleges.dart';
+import 'package:ipt_enrollement_systems/models/enrollment.dart';
+import 'package:ipt_enrollement_systems/models/student.dart';
+import 'package:ipt_enrollement_systems/models/subjects.dart';
 import 'package:ipt_enrollement_systems/providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'admin_homepage.dart';
 
-String token = "";
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,9 +28,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   late final TextEditingController _username;
   late final TextEditingController _password;
-
+  bool? isAdminl;
   @override
   void initState() {
     _username = TextEditingController();
@@ -39,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(148, 217, 222, 235),
       
@@ -122,22 +133,48 @@ class _LoginScreenState extends State<LoginScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: MaterialButton(
-              onPressed: () async {
+              onPressed: ()  async{
               
-              token = await login(_username.text, _password.text, context);
+               isAdminl = await login(_username.text, _password.text);
            
-             print(token);
-             print('Token bytes: ${token.codeUnits}');
+          
 
-              if (token == '"UWU"') {
-                  final admin = await getAdmin(_username.text);
-                  context.read<AdminProvider>().addAdmin(admin);
+              if (isAdminl == true) {
+                final admin = await getAdmin(_username.text);
+                context.read<AdminProvider>().addAdmin(admin);
                  
                 final List<College> colleges =  await fetchColleges();
                 context.read<AdminProvider>().addColleges(colleges);
 
+                final List<Subject> subjects = await getAllSubjects();
+                 context.read<AdminProvider>().addSubjects(subjects);
+
+                final List<Enrollment> enrollmentlistss = await getEnrollments();
+                 context.read<AdminProvider>().addEnrollments(enrollmentlistss);
+                 
+                 
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (contex) => const AdminHomepage()));
+                    MaterialPageRoute(builder: (contex) =>  AdminHomepage(isAdmin: isAdminl!,)));
+              }
+              else if( isAdminl ==false ){
+                final user = await getStudent(_username.text);
+                context.read<AdminProvider>().addStudent(user);
+                 
+                final List<College> colleges =  await fetchColleges();
+                context.read<AdminProvider>().addColleges(colleges);
+
+                final List<Subject> subjects = await getAllSubjects();
+                 context.read<AdminProvider>().addSubjects(subjects);
+
+                 final List<Subject> subjectsEnrolled = await fetchSubjects(_username.text);
+                  context.read<AdminProvider>().enrolledSubjectsAdd(subjectsEnrolled);
+
+                final int totalUnits  = await getTotalUnits(_username.text);
+                  context.read<AdminProvider>().setTotalUnits(totalUnits);
+                  
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (contex) =>  Homepage(isAdmin: isAdminl!,)));
+
               }
 
               },
@@ -185,33 +222,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  Future<String> login(String username, String password, BuildContext context) async {
-  final url = Uri.parse('http://127.0.0.1:8000/login/');
-  
-  final response = await http.post(
-    url,
+ 
 
 
-    
-    body: {
-      'username': username,
+  Future<bool?> login(String username, String password) async {
+    final url = Uri.parse('http://127.0.0.1:8000/login/');
+    final response = await http.post(url, body: {
+    'username': username,
       'password': password,
-    },
-  );
-  
-  if (response.statusCode == 200) {
-    final tokenBytes = response.bodyBytes;
-    final token = String.fromCharCodes(tokenBytes);
-    if(token != '"UWU"' && token != '"AWA"') {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(token))
-    );}
-    return token;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Failed to login'))
-    );
-    throw Exception('Failed to login');
-  }
-}
-}
+    });
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final token = responseData['token'];
+
+      if (token.startsWith('A-')) {
+             return true;
+
+      } else if (token.startsWith('S-')) {
+        return false;
+      }
+    } else {
+       ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Failed to login')));
+      return null;
+    }
+    return null;
+  }}
+

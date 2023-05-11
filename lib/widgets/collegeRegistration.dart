@@ -9,35 +9,30 @@ class CollegeRegistrationForm extends StatefulWidget {
   const CollegeRegistrationForm({super.key});
 
   @override
-  State<CollegeRegistrationForm> createState() => _CollegeRegistrationFormState();
+  State<CollegeRegistrationForm> createState() =>
+      _CollegeRegistrationFormState();
 }
 
 class _CollegeRegistrationFormState extends State<CollegeRegistrationForm> {
-
   final title = TextEditingController();
   final desc = TextEditingController();
 
-
-
-
-
-    @override
+  @override
   void dispose() {
     title.dispose();
     desc.dispose();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-      var uuid = const Uuid();
-        var id = uuid.v4();
-          final adminProvider = context.watch<AdminProvider>();
+    var uuid = const Uuid();
+    var id = uuid.v4();
+    final adminProvider = context.watch<AdminProvider>();
     final admins = adminProvider.admins;
-      final adminId = admins[0].adminId;
+    final adminId = admins[0].adminId;
 
-    return  AlertDialog(
+    return AlertDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +45,6 @@ class _CollegeRegistrationFormState extends State<CollegeRegistrationForm> {
             ),
           ),
           const SizedBox(height: 8),
-          
           TextField(
             controller: title,
             decoration: const InputDecoration(
@@ -72,27 +66,20 @@ class _CollegeRegistrationFormState extends State<CollegeRegistrationForm> {
           const SizedBox(height: 16),
           Row(
             children: [
-               TextButton(
-                  onPressed: () {
-
-
-
-
-                    if (title.text.isNotEmpty && desc.text.isNotEmpty)  {
-                      College registration =  College(
-                       collegeId: id,
-                       collegeAdminId: adminId,
-                       title: title.text,
-                       description: desc.text,
-
+              TextButton(
+                  onPressed: () async{
+                    if (title.text.isNotEmpty && desc.text.isNotEmpty) {
+                      College registration = College(
+                        collegeId: id,
+                        collegeAdminId: adminId,
+                        title: title.text,
+                        description: desc.text,
                       );
-
-                      createCollege(registration, context);
-                      context.read<AdminProvider>().addCollege(registration);
                       
-              
+                      final bool isSuc = await createCollege(registration, context);
+                     if(isSuc){ adminProvider.addCollege(registration);}
+
                       Navigator.pop(context);
-                
                     }
                   },
                   child: const Text(
