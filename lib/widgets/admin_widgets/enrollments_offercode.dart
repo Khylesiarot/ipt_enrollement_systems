@@ -24,7 +24,14 @@ class EnrollmentLists extends StatelessWidget {
                     .where((e) =>
                         e.offer_code.contains(offerCode))
                     .toList();
-        return SingleChildScrollView(
+        return enrollment.isEmpty ? const Padding(
+          padding: EdgeInsets.only(top: 20.0, bottom: 20),
+          child: Text("NO ENROLLEES", style: TextStyle(
+            fontSize: 30,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),),
+        ) : SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

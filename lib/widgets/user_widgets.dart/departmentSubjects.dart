@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ipt_enrollement_systems/models/enrollment.dart';
 import 'package:ipt_enrollement_systems/models/subjects.dart';
 import 'package:ipt_enrollement_systems/widgets/subjectCard.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,11 @@ class DeptSubjects extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AdminProvider>(
     builder: (context, subjectProvider, child) {
-       List<Subject> subjects = subjectProvider.subjects.where(
-      (subject) => subject.college_title == dept
-    ).toList();
+   List<Subject> enrollment = subjectProvider.enrolledSubjects;
+List<Subject> subjects = subjectProvider.subjects.where((subject) {
+  return subject.college_title == dept &&
+      !enrollment.any((enrolledSubject) => enrolledSubject.offerCode == subject.offerCode);
+}).toList();
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(

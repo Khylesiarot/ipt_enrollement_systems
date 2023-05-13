@@ -18,11 +18,21 @@ class AllSubjects extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AdminProvider>(
       builder: (context, subjectProvider, child) {
+        List<Subject> enrollment = subjectProvider.enrolledSubjects;
        List<Subject> subjects = subjectProvider.subjects
                     .where((subject) =>
-                        subject.college_title.contains(collegeTitle))
-                    .toList();
-        return SingleChildScrollView(
+                        subject.college_title.contains(collegeTitle)&&
+              !enrollment.any((enrolledSubject) =>
+                  enrolledSubject.offerCode == subject.offerCode))
+          .toList();
+        return subjects.isEmpty ? const Padding(
+          padding: EdgeInsets.only(top: 20.0, bottom: 20),
+          child: Text("EMPTY", style: TextStyle(
+            fontSize: 30,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),),
+        ) : SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

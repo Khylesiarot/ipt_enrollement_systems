@@ -52,7 +52,7 @@ class SubjectPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Padding(
+      floatingActionButton: isAdmin ? Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10),
         child: ClipOval(
           child: FloatingActionButton(
@@ -67,7 +67,7 @@ class SubjectPage extends StatelessWidget {
             child: const Icon(Icons.add),
           ),
         ),
-      ),
+      ):null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
      
     );
@@ -85,38 +85,55 @@ class SubjectPage extends StatelessWidget {
             width: 20,
                    ),
            
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:  [
-              const SizedBox(
-                height: 65,
+      SizedBox(
+  width: MediaQuery.of(context).size.width * 0.6,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SizedBox(
+        height: 45,
+      ),
+      Row(
+        children: [
+          SizedBox(
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_outlined,
+                color: Colors.amber,
+                size: 15,
               ),
-              Row(
-                
-           
-                children: [
-                  SizedBox(
-         
-            child: IconButton(onPressed: (){
-              Navigator.pop(context);
-            }, icon: const Icon(Icons.arrow_back_ios_outlined, color: Colors.amber,size: 15,)),
-                   ),
-                  Text(
-                    collegeTitle,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.black),
-                  ),
-                ],
-              ),
-              Text(description,
-                  style: const TextStyle(fontSize: 15, color: Colors.black)),
-            ],
+            ),
           ),
-          const SizedBox(
-            width: 50,
+          Text(
+            collegeTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: Colors.black,
+            ),
           ),
+        ],
+      ),
+      Expanded(
+        child: Text(
+          description,
+          maxLines: 2,
+          style: const TextStyle(fontSize: 15, color: Colors.black),
+          softWrap: true,
+          textAlign: TextAlign.left,
+        ),
+      ),
+      const SizedBox(
+        height: 8,
+      ),
+    ],
+  ),
+),
+
+        
           Expanded(
             child: Container(
               color: Colors.amber,

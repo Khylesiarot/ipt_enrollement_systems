@@ -40,7 +40,7 @@ class SubjectCard extends StatelessWidget {
     final int totalUnits = userProvider.totalUnits;
     const uuid = Uuid();
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10 ),
       child: GestureDetector(
         onTap: () {
           if (isAdmin) {

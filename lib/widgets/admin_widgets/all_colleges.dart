@@ -17,7 +17,14 @@ class AllColleges extends StatelessWidget {
     return Consumer<AdminProvider>(
       builder: (context, collegeProvider, child) {
         List<College> colleges = collegeProvider.colleges;
-        return GridView.count(
+        return colleges.isEmpty ? const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: Text("ADD COLLEGE", style: TextStyle(
+            fontSize: 30,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),),
+        ) :  GridView.count(
           shrinkWrap: true,
           crossAxisCount: 2,
           mainAxisSpacing: 2.0,

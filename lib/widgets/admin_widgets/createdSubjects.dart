@@ -16,7 +16,14 @@ class CreateSubjects extends StatelessWidget {
        List<Subject> subjects = subjectProvider.subjects.where(
       (subject) => subject.subjectAdminId == adminId
     ).toList();
-      return SingleChildScrollView(
+      return subjects.isEmpty ? const Padding(
+          padding: EdgeInsets.only(top: 20.0, bottom: 20),
+          child: Text("EMPTY", style: TextStyle(
+            fontSize: 30,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),),
+        ) : SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: subjects.map((subject) => SubjectCard(

@@ -51,14 +51,14 @@ class EnrollmentListsPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10),
+        padding: const EdgeInsets.all( 10),
         child: ClipOval(
           child: FloatingActionButton(
             onPressed: () {
              Navigator.pop(context);
             },
             backgroundColor: Colors.amber ,
-            child: const Icon(Icons.arrow_back_ios),
+            child: const Icon(Icons.arrow_left_rounded, size: 30,),
           ),
         ),
       ),
@@ -79,27 +79,28 @@ class EnrollmentListsPage extends StatelessWidget {
             width: 20,
                    ),
            
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:  [
-              const SizedBox(
-                height: 65,
-              ),
-              
-              Text(
-                offerCode,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.black),
-              ),
-              Text(title,
-                  style: const TextStyle(fontSize: 15, color: Colors.black)),
-            ],
+          SizedBox(
+             width: MediaQuery.of(context).size.width * 0.6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:  [
+                const SizedBox(
+                  height: 65,
+                ),
+                
+                Text(
+                  offerCode,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.black),
+                ),
+                Text(title,
+                    style: const TextStyle(fontSize: 15, color: Colors.black)),
+              ],
+            ),
           ),
-          const SizedBox(
-            width: 50,
-          ),
+         
           Expanded(
             child: Container(
               color: Colors.amber,

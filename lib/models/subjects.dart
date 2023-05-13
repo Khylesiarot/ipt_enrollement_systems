@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -65,7 +67,7 @@ Future<List<Subject>> getAllSubjects() async {
 }
 
 
-Future<Subject?> createSubject(Subject subject, BuildContext context) async {
+Future<bool> createSubject(Subject subject, BuildContext context) async {
   try {
     final response = await http.post(
       Uri.parse('http://localhost:8000/subjects/'),
@@ -77,16 +79,16 @@ Future<Subject?> createSubject(Subject subject, BuildContext context) async {
     if (response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Subject created successfully')));
-      return Subject.fromJson(jsonDecode(response.body));
+      return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Error creating subject: ${response.body}')));
-      return null;
+      return false;
     }
   } catch (error) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error creating subject: $error')));
-    return null;
+    return false;
   }
 }
 

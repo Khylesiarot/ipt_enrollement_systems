@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:ipt_enrollement_systems/models/subjects.dart';
 import 'package:provider/provider.dart';
@@ -126,7 +128,7 @@ class _SujectRegistrationForm extends State<SujectRegistrationForm> {
           Row(
             children: [
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (title.text.isNotEmpty &&
                         offerCode.text.isNotEmpty &&
                         courseNumber.text.isNotEmpty &&
@@ -141,8 +143,8 @@ class _SujectRegistrationForm extends State<SujectRegistrationForm> {
                         units: int.parse(dropDownvalue),
                       );
 
-                      createSubject(registration, context);
-                      context.read<AdminProvider>().addSubject(registration);
+                     final bool isTrue = await createSubject(registration, context);
+                      if (isTrue) {context.read<AdminProvider>().addSubject(registration);}
 
                       Navigator.pop(context);
                     }

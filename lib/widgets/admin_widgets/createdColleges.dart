@@ -16,7 +16,14 @@ class CreateColleges extends StatelessWidget {
        List<College> colleges = collegeProvider.colleges.where(
       (college) => college.collegeAdminId == adminId
     ).toList();
-      return SingleChildScrollView(
+      return colleges.isEmpty ? const Padding(
+          padding: EdgeInsets.only(top: 20.0, bottom: 20),
+          child: Text("EMPTY", style: TextStyle(
+            fontSize: 30,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),),
+        ) : SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: colleges.map((college) => CollegeCard(
